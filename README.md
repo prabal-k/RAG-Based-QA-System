@@ -44,7 +44,7 @@ To build a question-answering system that:
 
 ### 1. Clone the Repository
 
-'git clone https://github.com/prabal-k/RAG-Based-QA-System'
+'''git clone https://github.com/prabal-k/RAG-Based-QA-System'''
 
 cd hr-rag-chatbot 
 
