@@ -36,6 +36,9 @@ To build a question-answering system that:
 - ✅ **Easily Extensible**: Can be modified to work for other domains like movies, recipes, etc.
 
 ---
+## System Architecture
+
+![Image](https://github.com/user-attachments/assets/a19be4f1-db35-410a-9b32-fc58106c9d4e)
 
 ## ⚙️ Setup Instructions
 
