@@ -71,7 +71,7 @@ Create a .env file in the root folder with the following content:
 GROQ_API_KEY="your_groq_api_key_here"
 
 
-5. Run the Application
+### 5. Run the Application
    
 streamlit run app.py
 
