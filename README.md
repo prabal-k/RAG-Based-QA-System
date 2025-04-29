@@ -17,6 +17,8 @@ To build a question-answering system that:
 
 - Python 3.9 or higher
 - [Groq API Key](https://console.groq.com)
+  
+- https://console.groq.com/keys
 
 ---
 
