@@ -46,8 +46,6 @@ To build a question-answering system that:
 
 ```
 git clone https://github.com/prabal-k/RAG-Based-QA-System
-
-cd hr-rag-chatbot
 ```
 
 ### 2. Create and Activate a Python Virtual Environment
