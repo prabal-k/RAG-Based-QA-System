@@ -15,9 +15,15 @@ from langchain_core.messages import AnyMessage #Human message or Ai Message
 from langgraph.graph.message import add_messages  ## Reducers in Langgraph ,i.e append the messages instead of replace
 from typing_extensions import Annotated,TypedDict #Annotated for labelling and TypeDict to maintain graph state 
 from langchain_core.tools import tool
+from langchain_core.messages import trim_messages # Trim the message and keep past 2 conversation
+from langgraph.checkpoint.memory import MemorySaver #Implement langgraph memory
+
 
 from dotenv import load_dotenv  #Load environemnt variables from .env
 load_dotenv()
+# Create a Unique Id for each user conversation
+import uuid
+
 
 # --- Initialize Components such as llm ,embedding model and DuckDUCKSearch ---
 @st.cache_resource
@@ -92,8 +98,25 @@ class State(TypedDict):
     messages: Annotated[list[AnyMessage], add_messages] #List of messages appended
 
 #Function that decides which tool to use for serving the userquery
-def tool_calling_llm(state: State) -> State:
-    return {"messages": [llm_with_tools.invoke(state["messages"])]}
+def tool_calling_llm(state:State)->State:
+    print(state['messages'])
+    selected_msg = trim_messages(
+        state["messages"],
+        token_counter=len,  # <-- len will simply count the number of messages rather than tokens
+        max_tokens=10,  # <-- allow up to 10 messages.
+        strategy="last",
+        # Most chat models expect that chat history starts with either:
+        # (1) a HumanMessage or
+        # (2) a SystemMessage followed by a HumanMessage
+        # start_on="human" makes sure we produce a valid chat history
+        start_on="human",
+        # Usually, we want to keep the SystemMessage
+        # if it's present in the original history.
+        # The SystemMessage has special instructions for the model.
+        include_system=True,
+        allow_partial=False,
+    )
+    return {"messages":[llm_with_tools.invoke(selected_msg)]}
 
 # Initialize the StateGraph
 builder = StateGraph(state_schema=State)
@@ -111,39 +134,68 @@ builder.add_conditional_edges(
     tools_condition
 )
 builder.add_edge('tools','tool_calling_llm')
+memory = MemorySaver()
 
 #Compile the graph
-graph = builder.compile()
+graph = builder.compile(
+    checkpointer=memory
+)
 
-# --- Streamlit UI ---
+
+from langchain_core.messages import HumanMessage, AIMessage
+
 def main():
+    # Initialize thread_id in session_state if not exists
+    if "thread_id" not in st.session_state:
+        st.session_state.thread_id = str(uuid.uuid4())
+    
+    config = {"configurable": {"thread_id": st.session_state.thread_id}}
     
     if "messages" not in st.session_state:
         st.session_state.messages = [
             {"role": "assistant", "content": "Hello! I'm your HR Policy Assistant. Ask me about company policies or general questions."}
         ]
 
-    st.title("💼 HR Policy Chatbot")
+    st.title("HR Policy Chatbot")
     st.caption("Ask about company policies or general knowledge")
 
+    # Display chat messages
     for message in st.session_state.messages:
         with st.chat_message(message["role"]):
             st.markdown(message["content"])
 
-
     if prompt := st.chat_input("Your question"):
+        # Add user message to chat history
         st.session_state.messages.append({"role": "user", "content": prompt})
+        
         with st.chat_message("user"):
             st.markdown(prompt)
+            
         with st.chat_message("assistant"):
             with st.spinner("Thinking..."):
-                # Use a HumanMessage object instead of a plain string
-                response = graph.invoke({"messages": prompt})
-                final_response = response['messages'][-1].content if isinstance(response, dict) else str(response)
-                # response = retrieve_vectorstore_tool.invoke(prompt)
+                # Convert the message history to LangChain message format
+                langchain_messages = []
+                for msg in st.session_state.messages:
+                    if msg["role"] == "user":
+                        langchain_messages.append(HumanMessage(content=msg["content"]))
+                    elif msg["role"] == "assistant":
+                        langchain_messages.append(AIMessage(content=msg["content"]))
+                
+                # Invoke the graph with full message history(i.e human and ai message)
+                response = graph.invoke(
+                    {"messages": langchain_messages},
+                    config=config
+                )
+                
+                # Get the final response
+                if isinstance(response, dict) and 'messages' in response:
+                    final_response = response['messages'][-1].content
+                else:
+                    final_response = str(response)
+            
             st.markdown(final_response)
+        
+        # Add assistant response to chat history
         st.session_state.messages.append({"role": "assistant", "content": final_response})
-
-
 if __name__ == "__main__":
     main()
