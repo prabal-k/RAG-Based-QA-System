@@ -1,10 +1,10 @@
-# 💼 RAG-Based HR Policy Chatbot
+# RAG-Based HR Policy Chatbot
 
 A **Retrieval-Augmented Generation (RAG)** system that answers HR-related questions using a custom knowledge base and falls back to web search when questions fall outside of the dataset. Built with **Python**, **Streamlit**, **LangChain**, **Groq API**, and **Chroma vector store**.
 
 ---
 
-## 📌 Objective
+## Objective
 
 To build a question-answering system that:
 - Retrieves relevant HR policy information from a custom knowledge base.
@@ -13,14 +13,14 @@ To build a question-answering system that:
 
 ---
 
-## 🔑 Prerequisites
+## Prerequisites
 
 - Python 3.9 or higher
 - [Create Groq API Key]( https://console.groq.com/keys)
 
 ---
 
-## ✨ Features
+## Features
 
 - ✅ **Interactive Streamlit UI** for user-friendly Q&A experience.
 - ✅ **Retrieval System**: Embeds HR FAQ chunks using Hugging Face sentence transformers and stores them in Chroma.
@@ -44,7 +44,7 @@ To build a question-answering system that:
 
 ### 1. Clone the Repository
 
-git clone https://github.com/prabal-k/RAG-Based-QA-System
+'git clone https://github.com/prabal-k/RAG-Based-QA-System'
 
 cd hr-rag-chatbot 
 
