@@ -43,27 +43,36 @@ To build a question-answering system that:
 
 
 git clone https://github.com/yourusername/hr-rag-chatbot.git
+
 cd hr-rag-chatbot '
 
 ### 2. Create and Activate a Python Virtual Environment
+
 On Windows:
+
 python -m venv venv
+
 venv\Scripts\activate
 
 On Linux/macOS:
+
 python3 -m venv venv
+
 source venv/bin/activate
 
 ### 3. Install Required Dependencies
+
 pip install -r requirements.txt
 
 ### 4. Configure Environment Variables
+
 Create a .env file in the root folder with the following content:
 
 GROQ_API_KEY="your_groq_api_key_here"
 
 
 5. Run the Application
+   
 streamlit run app.py
 
 
