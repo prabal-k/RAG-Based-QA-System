@@ -16,9 +16,7 @@ To build a question-answering system that:
 ## 🔑 Prerequisites
 
 - Python 3.9 or higher
-- [Groq API Key](https://console.groq.com)
-  
-- https://console.groq.com/keys
+- [Create Groq API Key]( https://console.groq.com/keys)
 
 ---
 
@@ -53,13 +51,13 @@ cd hr-rag-chatbot '
 
 ### 2. Create and Activate a Python Virtual Environment
 
-On Windows:
+-> On Windows:
 
 python -m venv venv
 
 venv\Scripts\activate
 
-On Linux/macOS:
+-> On Linux/macOS:
 
 python3 -m venv venv
 
