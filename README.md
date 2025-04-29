@@ -82,7 +82,7 @@ streamlit run app.py
 ### This demonstrates the Application along with the friendly user interface.
 
 ![Image](https://github.com/user-attachments/assets/6922de89-a625-424f-9bff-7e6a40ad1b5f)
-![Image](https://github.com/user-attachments/assets/874559a1-7fda-44fe-81ff-a38652f6ae35)
+![Image](https://github.com/user-attachments/assets/49e93e2b-e4bd-4912-ab25-fd9f02ec5e16)
 
 ![Image](https://github.com/user-attachments/assets/eca7b770-f06c-41e1-8c40-59164be542e6)
 
