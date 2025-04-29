@@ -1,82 +1,73 @@
-RAG-Based QA System with Groq
+# 💼 RAG-Based HR Policy Chatbot
 
-A Retrieval-Augmented Generation (RAG) system for answering HR policy questions, combining document retrieval with LLM-powered generation. Supports dynamic tool calling for knowledge base vs. web search routing.
-Features
+A **Retrieval-Augmented Generation (RAG)** system that answers HR-related questions using a custom knowledge base and falls back to web search when questions fall outside of the dataset. Built with **Python**, **Streamlit**, **LangChain**, **Groq API**, and **Chroma vector store**.
 
-    Custom HR Policy QA: Answers questions from a curated HR knowledge base
+---
 
-    Tool-Calling LLM: Uses Groq's ultra-fast LLMs (Llama 3/Mixtral) to select between:
+## 📌 Objective
 
-        Vector store retrieval (HR policies)
+To build a question-answering system that:
+- Retrieves relevant HR policy information from a custom knowledge base.
+- Uses an LLM to generate human-like responses.
+- Falls back to DuckDuckGo web search when the user asks questions unrelated to HR content.
 
-        Web search (general questions)
+---
 
-    LangGraph Workflow: Manages tool selection and response generation
+## 🔑 Prerequisites
 
-Prerequisites
+- Python 3.9 or higher
+- [Groq API Key](https://console.groq.com)
 
-    Python 3.9+
+---
 
-    Groq API key (free at console.groq.com)
+## ✨ Features
 
-    DuckDuckGo Search API (free)
+- ✅ **Interactive Streamlit UI** for user-friendly Q&A experience.
+- ✅ **Retrieval System**: Embeds HR FAQ chunks using Hugging Face sentence transformers and stores them in Chroma.
+- ✅ **RAG Pipeline**: Retrieves top-3 most relevant chunks from the vector store and feeds them to the LLM to generate a context-aware answer.
+- ✅ **Agent Logic with LangGraph**:
+  - If the query relates to HR, it searches the knowledge base.
+  - If not, it routes to DuckDuckGo search.
+- ✅ **Web Search Fallback** using DuckDuckGo for out-of-domain queries.
+- ✅ **Dynamic Prompting**:
+  - If context is missing: "I couldn't find information about this."
+  - If LLM says “I don’t know”: Suggests user to rephrase the question.
+- ✅ **Lightweight, Local Dataset** (`company_QA.csv`) with HR questions and answers.
+- ✅ **Easily Extensible**: Can be modified to work for other domains like movies, recipes, etc.
 
-Setup
+---
 
-    Clone the repository
-    bash
+## ⚙️ Setup Instructions
 
-git clone https://github.com/yourusername/RAG-Based-QA-System.git
-cd RAG-Based-QA-System
+### 1. Clone the Repository
 
-Create and activate virtual environment
-bash
 
+git clone https://github.com/yourusername/hr-rag-chatbot.git
+cd hr-rag-chatbot '
+
+### 2. Create and Activate a Python Virtual Environment
+On Windows:
 python -m venv venv
-source venv/bin/activate  # Linux/Mac
-venv\Scripts\activate    # Windows
+venv\Scripts\activate
 
-Install dependencies
-bash
+On Linux/macOS:
+python3 -m venv venv
+source venv/bin/activate
 
+### 3. Install Required Dependencies
 pip install -r requirements.txt
 
-Set up environment variables
-Create a .env file:
-bash
+### 4. Configure Environment Variables
+Create a .env file in the root folder with the following content:
 
-    echo "GROQ_API_KEY=your_groq_api_key" > .env
+GROQ_API_KEY="your_groq_api_key_here"
 
-Running the System
-1. Initialize the Knowledge Base
 
-Place your HR policy documents in data/hr_policies/ and run:
-bash
+5. Run the Application
+streamlit run app.py
 
-python build_vectorstore.py
 
-2. Start the QA System
 
-Run the main application:
-bash
 
-python main.py
 
-3. Test with Sample Queries
 
-The system will prompt for questions. Try:
-
-    "How many sick days do we get?"
-
-    "What's our remote work policy?"
-
-    "Who won the last World Cup?"
-
-Configuration
-
-Edit config.py to customize:
-python
-
-MODEL_NAME = "mixtral-8x7b-32768"  # Alternatives: llama3-70b-8192
-TOOL_TIMEOUT = 30  # seconds
-KNOWLEDGE_BASE_DIR = "data/hr_policies/"
