@@ -50,13 +50,13 @@ cd hr-rag-chatbot
 
 ### 2. Create and Activate a Python Virtual Environment
 
-#### On Windows:
+### On Windows:
 
 python -m venv venv
 
 venv\Scripts\activate
 
-#### On Linux/macOS:
+### On Linux/macOS:
 
 python3 -m venv venv
 
