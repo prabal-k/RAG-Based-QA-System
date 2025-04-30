@@ -77,6 +77,9 @@ GROQ_API_KEY = "your_groq_api_key_here"
 ``
 streamlit run app.py
 ``
+
+---
+
 ## Challenges & Design Choices in HR Policy Chatbot Implementation
 
 ### 1. Introduction
@@ -85,7 +88,7 @@ Outlines the key challenges and design decisions made during the development of 
 
 ### 2. Key Challenges & Solutions
 
-###2.1 Memory Management in Streamlit
+### 2.1 Memory Management in Streamlit
 
 #### Problem:
 
@@ -128,6 +131,8 @@ Outlines the key challenges and design decisions made during the development of 
   1. Paramater setup: search_kwargs (k=2, lambda_mult=0.4) to balance relevance and diversity.
 
   2. Used lazy loading (CSVLoader.lazy_load()) to handle large files efficiently.
+
+---
 
 ### 3. Key Design Choices
 
