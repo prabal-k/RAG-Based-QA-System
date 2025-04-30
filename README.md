@@ -49,7 +49,7 @@ To build a question-answering system that:
 git clone https://github.com/prabal-k/RAG-Based-QA-System
 ```
 
-### 2. Create and Activate a Python Virtual Environment
+### 2. Open with VsCode ,Create and Activate a Python Virtual Environment
 
 ### On Windows:
 ```
