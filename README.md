@@ -159,6 +159,16 @@ Outlines the key challenges and design decisions made during the development of 
 
 ![Image](https://github.com/user-attachments/assets/01f8b54e-64b3-46d8-a3f9-5cb96b3c51ce)
 
+---
+
 ![Image](https://github.com/user-attachments/assets/17efe124-9f93-459c-bd9e-e49e55a67570)
+
+---
+![Image](https://github.com/user-attachments/assets/4956af8f-ba75-4044-bdb2-d5f9dfd64382)
+
+---
+
+![Image](https://github.com/user-attachments/assets/ae6befc3-0303-4b22-9166-748f066bc653)
+
 
 
