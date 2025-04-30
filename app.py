@@ -29,7 +29,7 @@ import uuid
 @st.cache_resource
 def init_components():
     embedding_model = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2") #Load the hf Embedding model
-    llm = ChatGroq(temperature=0.4, model_name='Qwen-Qwq-32b',max_tokens=600) #Initialize the llm
+    llm = ChatGroq(temperature=0.4, model_name='Qwen-Qwq-32b',max_tokens=650) #Initialize the llm
     search = DuckDuckGoSearchRun()  #Duckducksearch
     return embedding_model, llm, search
 
@@ -47,16 +47,16 @@ def get_vectorstore(_embedding_model):
         for doc in loader.lazy_load(): #Perfom lazy_load() to load the file content
             docs.append(doc)  
         vectorstore = Chroma.from_documents(documents=docs, embedding=_embedding_model, persist_directory=persist_dir) #Create a vector embeddings
-        vectorstore.persist() #Save the vector store
+        # vectorstore.persist() #Save the vector store
         return vectorstore
     
 # --- RAG Chain Response ---
 def get_rag_response(query, vectorstore, llm):
     # Creating a MMR retriever ['k': select top 2 similar documents and 'lambda_mult': for diverse documents ]
-    retriever = vectorstore.as_retriever(search_type="mmr", search_kwargs={"k": 2, "lambda_mult": 0.4})
+    retriever = vectorstore.as_retriever(search_type="mmr", search_kwargs={"k": 2, "lambda_mult": 0.1})
     template = PromptTemplate(
     template= """You are an HR assistant with access to our internal company policies. Answer the user question based only on the given context . If the answer is not present in the context 
-    simply answer with 'I donot have access to the information you are asking for.'
+    or you dont know the answer then reply with 'I donot have access to the information you are asking for.'
     'context:'
     {context}
 
@@ -79,13 +79,13 @@ vectorstore = get_vectorstore(embedding_model)
 # Tool A. VectorStore Retriever tool (Convert the rag_chain into a tool)
 @tool
 def retrieve_vectorstore_tool(query: str) -> str:
-    """RAG solution for a company's HR Policy FAQ"""
+    """Direct when the user question about a company policy/HR FAQ's."""
     return get_rag_response(query, vectorstore, model)
 
 #DuckDuckSeach Tool
 @tool
 def duckducksearch_tool(query: str) -> str:
-    """Perform DuckDuckGo search for non-HR queries"""
+    """Perform DuckDuckGo search for general user queries other then the company's policy."""
     return search.invoke(query)
 
 
@@ -103,7 +103,7 @@ def tool_calling_llm(state:State)->State:
     selected_msg = trim_messages(
         state["messages"],
         token_counter=len,  # <-- len will simply count the number of messages rather than tokens
-        max_tokens=10,  # <-- allow up to 10 messages.
+        max_tokens=10,  # <-- allow up to 10 messages.(i.e 2-3 past conversation between human and Ai)
         strategy="last",
         # Most chat models expect that chat history starts with either:
         # (1) a HumanMessage or
@@ -182,10 +182,13 @@ def main():
                         langchain_messages.append(AIMessage(content=msg["content"]))
                 
                 # Invoke the graph with full message history(i.e human and ai message)
-                response = graph.invoke(
-                    {"messages": langchain_messages},
-                    config=config
-                )
+                try:
+                    response = graph.invoke(
+                        {"messages": langchain_messages},
+                        config=config
+                    )
+                except:
+                    response = "There was a problem this time, please try again."
                 
                 # Get the final response(i.e last AI Message)
                 if isinstance(response, dict) and 'messages' in response:
