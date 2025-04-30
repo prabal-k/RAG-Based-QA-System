@@ -77,7 +77,14 @@ GROQ_API_KEY = "your_groq_api_key_here"
 streamlit run app.py
 ``
 
+## Snapshots
 
+### This demonstrates the Application along with the friendly user interface.
 
+![Image](https://github.com/user-attachments/assets/49e93e2b-e4bd-4912-ab25-fd9f02ec5e16)
+
+![Image](https://github.com/user-attachments/assets/01f8b54e-64b3-46d8-a3f9-5cb96b3c51ce)
+
+![Image](https://github.com/user-attachments/assets/17efe124-9f93-459c-bd9e-e49e55a67570)
 
 
