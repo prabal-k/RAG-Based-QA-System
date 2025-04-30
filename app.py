@@ -29,7 +29,7 @@ import uuid
 @st.cache_resource
 def init_components():
     embedding_model = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2") #Load the hf Embedding model
-    llm = ChatGroq(temperature=0.4, model_name="Qwen-Qwq-32b",max_tokens=400) #Initialize the llm
+    llm = ChatGroq(temperature=0.4, model_name='Qwen-Qwq-32b',max_tokens=600) #Initialize the llm
     search = DuckDuckGoSearchRun()  #Duckducksearch
     return embedding_model, llm, search
 
@@ -55,7 +55,7 @@ def get_rag_response(query, vectorstore, llm):
     # Creating a MMR retriever ['k': select top 2 similar documents and 'lambda_mult': for diverse documents ]
     retriever = vectorstore.as_retriever(search_type="mmr", search_kwargs={"k": 2, "lambda_mult": 0.4})
     template = PromptTemplate(
-    template= """You are a helpful AI Assistant. Answer the user question based only on the given context . If the answer is not present in the context 
+    template= """You are an HR assistant with access to our internal company policies. Answer the user question based only on the given context . If the answer is not present in the context 
     simply answer with 'I donot have access to the information you are asking for.'
     'context:'
     {context}
@@ -145,7 +145,7 @@ graph = builder.compile(
 from langchain_core.messages import HumanMessage, AIMessage
 
 def main():
-    # Initialize thread_id in session_state if not exists
+    # Initialize thread_id(unique id for each conversation) in session_state if not exists
     if "thread_id" not in st.session_state:
         st.session_state.thread_id = str(uuid.uuid4())
     
@@ -159,13 +159,13 @@ def main():
     st.title("HR Policy Chatbot")
     st.caption("Ask about company policies or general knowledge")
 
-    # Display chat messages
+    # display chat messages
     for message in st.session_state.messages:
         with st.chat_message(message["role"]):
             st.markdown(message["content"])
 
     if prompt := st.chat_input("Your question"):
-        # Add user message to chat history
+        # adding user message to chat history
         st.session_state.messages.append({"role": "user", "content": prompt})
         
         with st.chat_message("user"):
@@ -187,15 +187,16 @@ def main():
                     config=config
                 )
                 
-                # Get the final response
+                # Get the final response(i.e last AI Message)
                 if isinstance(response, dict) and 'messages' in response:
-                    final_response = response['messages'][-1].content
+                    final_response = response['messages'][-1].content #last msg from AI
                 else:
                     final_response = str(response)
             
             st.markdown(final_response)
         
-        # Add assistant response to chat history
+        # Add AI response to chat history
         st.session_state.messages.append({"role": "assistant", "content": final_response})
+
 if __name__ == "__main__":
     main()
